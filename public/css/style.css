@@ -59,6 +59,7 @@ textarea {
     background-color: #2980b9;
     width: 100%;
     padding: 0.75em 0;
+    overflow: hidden;
 }
 .header .logo {
     font-family: Arial Black;
@@ -120,10 +121,17 @@ textarea {
     border-bottom: 1px dotted #ccc;
     padding: 0 1em 1em;
 }
-.content .post .post-date {
+.content .post .my-post-date {
     font-size: 0.7em;
     color: #848484;
     text-align: right;
+    border: 0;
+    margin: 0;
+}
+.content .post .other-post-date {
+    font-size: 0.7em;
+    color: #848484;
+    text-align: left;
     border: 0;
     margin: 0;
 }
@@ -134,7 +142,11 @@ textarea {
     margin: 2em auto 0;
     padding: 0 1em 3em;
 }
-.content .post .post-text {
+.content .post .my-post-text {
+    margin: 0;
+}
+.content .post .other-post-text {
+    text-align: right;
     margin: 0;
 }
 .container .postarea .postarea-button:hover,
@@ -155,4 +167,34 @@ textarea {
     font-weight: bold;
     color: #c0392b;
     cursor: pointer;
+}
+.login-logo{
+    text-align: center;
+}
+.user-add-link{
+    font-size: 16px;
+    margin-top: 20px;
+    margin-bottom: -5px;
+}
+.logout{
+    /* floatで寄せるとレイアウト崩れるのでmargin-topで暫定対応*/
+    /* もっとマシなやり方ありそう*/
+    float: right;
+    margin-top: 7px;
+    font-size: 24px;
+    color: #fff;
+}
+.logout:hover{
+    cursor: pointer;
+    opacity:0.6;
+}
+.my-post-name{
+    font-size: 0.7em;
+    font-weight: bold;
+    margin-right: 10px;
+}
+.other-post-name{
+    font-size: 0.7em;
+    font-weight: bold;
+    margin-left: 10px;
 }
