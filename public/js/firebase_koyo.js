@@ -1,8 +1,13 @@
+/* https://github.com/milk-cocoa/chat を参考にあれこれ追加 */
+$(function(){
+
 'use strict';
 //Firebaseの初期化
 firebase.initializeApp({databaseURL: "https://chatsystem-ad176.firebaseio.com"});
 const database = firebase.database();
 const ref = database.ref('messages');
+
+// メッセージ表示部分のダミー
 let last_message = "dummy";
 
 //初期読み込み & pushイベント検知
@@ -13,12 +18,15 @@ ref.on("child_added", (snapshot) => {
     });
 });
 
-//インジェクション対策
+//インジェクション対策で入力した内容をhtmlエスケープ
 const escapeHTML = (val) => $('<div>').text(val).html();
 
 //投稿処理
 const postAction = () => {
+    // フォームに入力した内容(htmlエスケープ)
     const content = escapeHTML($("#content").val());
+    // フォームが空で無ければ、Firebaseのデータベースに送信
+    // 
     if(content && content !== "") {
         ref.push({
             title: 'タイトル',
@@ -46,7 +54,8 @@ const removeAction = function(){
             console.log("Remove failed: " + error.message)
         });
 
-        $(this).closest('div').remove();
+        // 要素の削除
+        $(this).closest('div').fadeOut('slow', function() { $(this).remove(); });
     }
 };
 
@@ -61,8 +70,8 @@ const renderMessage = (message) => {
     $("#"+last_message).before(
         `<div id="${message.id}" class="post">
         ${message_html}
+        <p id = "${message.id}" class="remove-text">削除</p>
         ${date_html}
-        <button id = "${message.id}" class="remove">削除する</button>
         </div>`);
     last_message = message.id;
 }
@@ -70,11 +79,10 @@ const renderMessage = (message) => {
 //クリック時の処理
 $('#post').click(() => postAction());
 
-//削除ボタンクリック by koyo
+// 削除ボタンクリック時の処理 by koyo
 // 関数は参照を渡す
 //　第3引数に関数に渡すためのオブジェクトを定義する必要があるので注意
-//$('body').on("click", ".remove", {string:this.id}, removeAction);
-$('body').on("click", ".remove", removeAction);
+$('body').on("click", ".remove-text", removeAction);
 
 //エンターキータイプ時の処理
 $('#content').keydown((e) => {
@@ -82,4 +90,6 @@ $('#content').keydown((e) => {
         postAction();
         return false;
     }
+});
+
 });
