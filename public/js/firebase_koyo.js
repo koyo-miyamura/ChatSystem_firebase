@@ -49,6 +49,13 @@ var escapeHtml = (function (String) {
 
 //---user_add---
 $("#user_add").click(() => user_add());
+$('#password_add').keydown((e) => {
+    //エンターキー押した時の処理
+    if(e.which == 13){
+        user_add();
+        return false;
+    }
+});
 
 const user_add = () => {
     let confirm_flag = confirm('この内容で登録しますか?');
@@ -78,6 +85,14 @@ const user_add = () => {
 
 //---login---
 $("#login").click(() => login());
+
+$('#password').keydown((e) => {
+    //エンターキー押した時の処理
+    if(e.which == 13){
+        login();
+        return false;
+    }
+});
 
 const login = () => {
     let email = escapeHtml($('#email').val());
@@ -158,13 +173,10 @@ ref.on("child_added", (snapshot) => {
     });
 });
 
-//インジェクション対策で入力した内容をhtmlエスケープ
-const escapeHTML = (val) => $('<div>').text(val).html();
-
 //投稿処理
 const postAction = () => {
     // フォームに入力した内容(htmlエスケープ)
-    const content = escapeHTML($("#content").val());
+    const content = escapeHtml($("#content").val());
     // フォームが空で無ければ、Firebaseのデータベースに送信
     // 
     if(content && content !== "") {
@@ -213,8 +225,8 @@ const renderMessage = (message) => {
 
         var message_html = `
         <p class="${post_text_class}">
-        <span class="${post_name_class}">${escapeHTML(message.value.name)}</span>
-        ${escapeHTML(message.value.content)}
+        <span class="${post_name_class}">${escapeHtml(message.value.name)}</span>
+        ${escapeHtml(message.value.content)}
         </p>`;
 
         var remove_html = `<p id = "${message.id}" class="remove-text">削除</p>`;
@@ -225,8 +237,8 @@ const renderMessage = (message) => {
 
         var message_html = `
         <p class="${post_text_class}">
-        ${escapeHTML(message.value.content)}
-        <span class="${post_name_class}">${escapeHTML(message.value.name)}</span>
+        ${escapeHtml(message.value.content)}
+        <span class="${post_name_class}">${escapeHtml(message.value.name)}</span>
         </p>`;
 
         // 自分の投稿以外は削除できないように
@@ -235,7 +247,7 @@ const renderMessage = (message) => {
 
     let date_html = '';
     if(message.value.date) {
-        date_html = `<p class="${post_date_class}">${escapeHTML(new Date(message.value.date).toLocaleString())}</p>`;
+        date_html = `<p class="${post_date_class}">${escapeHtml(new Date(message.value.date).toLocaleString())}</p>`;
     }
 
     $("#"+last_message).before(
