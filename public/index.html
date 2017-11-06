@@ -6,30 +6,39 @@
     <title>ChatSystem</title>
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="css/AdminLTE.min.css">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/4.1.2/firebase.js"></script>
 </head>
 
-<body>
+<body class="hold-transition login-page">
     <div class="header">
-        <h1 class="logo">ChatSystem<i id="logout" class="fa fa-sign-out logout"></i></h1>
+        <h1 class="login-logo logo">ChatSystem</h1>
     </div>
 
-    <div class="container">
-        <div class="postarea cf">
-            <div class="postarea-text">
-                <textarea name="" id="content" cols="30" rows="10" placeholder="Enterで投稿"></textarea>
-                <button id="post" class="postarea-button"><i class="fa fa-hand-o-down" aria-hidden="true"></i> 投稿</buttons>
-            </div>
+    <div class="login-box">
+        <div class="login-box-body">
+            <fieldset>
+                <legend class="login-box-msg">Let's Chat!</legend>
+                <div class="form-group">
+                    <div class="input text">
+                        <label for="Email">Email</label>
+                        <input type="text" name="Email" class="form-control" id="email">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input password">
+                        <label for="password">password</label>
+                        <input type="password" name="password" class="form-control" id="password">
+                    </div>
+                </div>
+            </fieldset>
+            <button class="btn btn-primary btn-block btn-flat" id="login">ログイン</button>
+
+            <p class="user-add-link"><a href="user_add.html">新規登録</a></p>
         </div>
     </div>
-
-    <div id="messages" class="content">
-        <div id="dummy"></div>
-    </div>
-
-    <p class="footer"><strong>author: <a href="https://github.com/koyo-miyamura">Koyo Miyamura</a>,&emsp;<strong>参考にしたリポジトリ <a href="https://github.com/milk-cocoa/chat">Milkcocoa Chat</a></strong></p>
-
     <script src="js/firebase_koyo.js"></script>
 </body>
 </html>

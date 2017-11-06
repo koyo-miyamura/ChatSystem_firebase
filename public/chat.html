@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+    <title>ChatSystem</title>
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.1.2/firebase.js"></script>
+</head>
+
+<body>
+    <div class="header">
+        <h1 class="logo">ChatSystem<i id="logout" class="fa fa-sign-out logout"></i></h1>
+    </div>
+
+    <div class="container">
+        <div class="postarea cf">
+            <div class="postarea-text">
+                <textarea name="" id="content" cols="30" rows="10" placeholder="Enterで投稿"></textarea>
+                <button id="post" class="postarea-button"><i class="fa fa-hand-o-down" aria-hidden="true"></i> 投稿</buttons>
+            </div>
+        </div>
+    </div>
+
+    <div id="messages" class="content">
+        <div id="dummy"></div>
+    </div>
+
+    <p class="footer"><strong>author: <a href="https://github.com/koyo-miyamura">Koyo Miyamura</a>,&emsp;<strong>参考にしたリポジトリ <a href="https://github.com/milk-cocoa/chat">Milkcocoa Chat</a></strong></p>
+
+    <script src="js/firebase_koyo.js"></script>
+</body>
+</html>

@@ -17,7 +17,7 @@ var logouting_flag = false;
 var user_email = null;
 var uid = null;
 
-//-----ログイン周りの処理(user_add.html, login.html)-----
+//-----ログイン周りの処理(user_add.html, index.html)-----
 
 //escapeHTMLはhttps://iwb.jp/jquery-javascript-html-escape/から引用
 var escapeHtml = (function (String) {
@@ -69,7 +69,7 @@ const user_add = () => {
             firebase.auth().createUserWithEmailAndPassword(email, password)
             .then(function(){
                 alert('ユーザーを登録しました');
-                location.href = "login.html";
+                location.href = "index.html";
             })
             .catch(function(error) {
                 // Handle Errors here.
@@ -102,7 +102,7 @@ const login = () => {
     if(email && password && email !== "" && password !== ""){
         firebase.auth().signInWithEmailAndPassword(email, password)
         .then(function(){
-            location.href = "index.html";
+            location.href = "chat.html";
         })
         .catch(function(error) {
             // Handle Errors here.
@@ -127,17 +127,18 @@ firebase.auth().onAuthStateChanged((user) => {
         console.log(location.pathname);
 
         //ログイン画面or登録画面でなければログイン必要
-        let isAuthLocation = location.pathname !== "/login.html" && location.pathname !== "/user_add.html";
+        //let isAuthLocation = location.pathname !== "/index.html" && location.pathname !== "/user_add.html";
+        let isAuthLocation = location.pathname == "/chat.html";
         //logoutが原因でonAuThStateChangedが呼ばれた場合はalertを出さない
         if(isAuthLocation && !logouting_flag){
             alert("ログインしてください");
-            location.href = "login.html";
+            location.href = "index.html";
         }
         logouting_flag = false;
     }
 });
 
-//-----Chat周りの処理(index.html)-----
+//-----Chat周りの処理(chat.html)-----
 
 //---logout---
 $("#logout").click(() => logout());
@@ -151,7 +152,7 @@ const logout = () => {
         firebase.auth().signOut()
         .then(function(){
             logouting_flag = true;
-            location.href = "login.html";
+            location.href = "index.html";
         })
         .catch(function(error){
             var errorCode = error.code;
