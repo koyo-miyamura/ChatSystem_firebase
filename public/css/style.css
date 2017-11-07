@@ -86,7 +86,7 @@ textarea {
 }
 .container .postarea .postarea-text textarea {
     font-size: 1em;
-    width: 70%;
+    width: 75%;
     display: inline-block;
     border: 1px solid #ededed;
     border-radius: 5px;
@@ -110,7 +110,6 @@ textarea {
     border: 1px solid #ededed;
     float: right;
     width: 15%;
-    min-width: 100px;
 }
 .content {
     max-width: 760px;
@@ -202,9 +201,9 @@ textarea {
 @media screen and (max-width: 480px) {
 /* 480pxまでの幅の場合に適応 */
     .container .postarea .postarea-button{
-        width: 20%;
+        width: 25%;
     }
     .container .postarea .postarea-text textarea{
-        width: 75%;
+        width: 70%;
     }
 }

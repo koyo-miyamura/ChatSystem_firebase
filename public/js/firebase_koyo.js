@@ -266,7 +266,7 @@ $('#post').click(() => postAction());
 // 削除ボタンクリック時の処理 by koyo
 // 関数は参照を渡す
 //　第3引数に関数に渡すためのオブジェクトを定義する必要があるので注意
-$('body').on("click", ".remove-text", removeAction);
+$('body').on("click touchstart", ".remove-text", removeAction);
 
 //エンターキータイプ時の処理
 $('#content').keydown((e) => {
