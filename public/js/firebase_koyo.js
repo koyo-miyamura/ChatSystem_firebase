@@ -2,7 +2,8 @@
 $(function(){
 
 'use strict';
-//-----Firebaseの初期化-----
+
+//-----Firebaseの初期化など-----
 var config = {
         apiKey: 'AIzaSyCjcgCd72qWN00HN-TBExtkwIZ67BlcPHk',
         authDomain: 'https://chatsystem-ad176.firebaseapp.com',
@@ -12,14 +13,17 @@ var config = {
 firebase.initializeApp(config);
 const database = firebase.database();
 const ref = database.ref('messages');
+
 //ログアウト時にリダイレクトする際にonAuthChangedの処理でalertが出ないようにする変数
 var logouting_flag = false;
+
+//ログインユーザー情報を保存するグローバル変数
 var user_email = null;
 var uid = null;
 
 //-----ログイン周りの処理(user_add.html, index.html)-----
 
-//escapeHTMLはhttps://iwb.jp/jquery-javascript-html-escape/から引用
+//escapeHTMLは https://iwb.jp/jquery-javascript-html-escape/ から引用
 var escapeHtml = (function (String) {
   var escapeMap = {
     '&': '&amp;',
@@ -47,7 +51,7 @@ var escapeHtml = (function (String) {
   };
 }(String));
 
-//---user_add---
+//---user_add(user_add.html)---
 $("#user_add").click(() => user_add());
 $('#password_add').keydown((e) => {
     //エンターキー押した時の処理
@@ -83,7 +87,7 @@ const user_add = () => {
     }
 }
 
-//---login---
+//---login(index.html)---
 $("#login").click(() => login());
 
 $('#password').keydown((e) => {
@@ -98,7 +102,7 @@ const login = () => {
     let email = escapeHtml($('#email').val());
     let password = escapeHtml($('#password').val());
 
-    //有効であれば処理
+    //有効であればチャット画面へ移動(同時にonAuthStateChangedが呼ばれる)
     if(email && password && email !== "" && password !== ""){
         firebase.auth().signInWithEmailAndPassword(email, password)
         .then(function(){
@@ -117,6 +121,7 @@ const login = () => {
 //---権限周りの処理---
 firebase.auth().onAuthStateChanged((user) => {
     if (user) {
+        //現在ログインしているユーザーの情報をグローバル変数に追加
         user_email = user.email;
         uid = user.uid;
         console.log(user.email);
@@ -127,7 +132,6 @@ firebase.auth().onAuthStateChanged((user) => {
         console.log(location.pathname);
 
         //ログイン画面or登録画面でなければログイン必要
-        //let isAuthLocation = location.pathname !== "/index.html" && location.pathname !== "/user_add.html";
         let isAuthLocation = location.pathname == "/chat.html";
         //logoutが原因でonAuThStateChangedが呼ばれた場合はalertを出さない
         if(isAuthLocation && !logouting_flag){
@@ -138,7 +142,7 @@ firebase.auth().onAuthStateChanged((user) => {
     }
 });
 
-//-----Chat周りの処理(chat.html)-----
+//-----Chat.htmlの処理-----
 
 //---logout---
 $("#logout").click(() => logout());
@@ -151,6 +155,7 @@ const logout = () => {
     if(confirm_flag){
         firebase.auth().signOut()
         .then(function(){
+            //onAuthStateChangedの処理に引っかからないようにするためにtrueに
             logouting_flag = true;
             location.href = "index.html";
         })
@@ -163,10 +168,8 @@ const logout = () => {
     }
 };
 
-//メッセージ表示部分のダミー
-let last_message = "dummy";
-
-//初期読み込み & pushイベント検知
+//---初期読み込み & pushイベント検知---
+//すでに存在する投稿すべてに対してrenderMessageを実行することに注意
 ref.on("child_added", (snapshot) => {
     renderMessage({
         id: snapshot.key,
@@ -174,51 +177,11 @@ ref.on("child_added", (snapshot) => {
     });
 });
 
-//投稿処理
-const postAction = () => {
-    //フォームに入力した内容(htmlエスケープ)
-    const content = escapeHtml($("#content").val());
-    //フォームが空で無ければ、Firebaseのデータベースに送信 
-    if(content && content !== "") {
-        ref.push({
-            title: 'タイトル',
-            content: content,
-            date: new Date().getTime(),
-            name: user_email
-        })
-        .then((res)=>{
-            console.log(res);
-        });
-    }
-    $("#content").val("");
-};
-
-//投稿除去 by koyo
-//アロー関数式使うと「thisがクリックされた要素を返さなくなる」のでfunction()を使う
-const removeAction = function(){
-    let confirm_flag = confirm("本当に削除してもよろしいですか?");
-    if(confirm_flag){
-        const removeRef = database.ref("messages/" + this.id);
-        removeRef.remove()
-        .then(function() {
-            console.log("Remove succeeded.")
-        })
-        .catch(function(error) {
-            console.log("Remove failed: " + error.message)
-        });
-
-        // 要素の削除
-        $(this).closest('div').fadeOut('slow', function() { $(this).remove(); });
-    }
-};
-
-//メッセージをDOM追加
-//削除するボタン追加 by koyo
+//投稿をDOM追加
+//削除処理の追加 by koyo
 const renderMessage = (message) => {
 
-    //ログインしているユーザーかどうかでスタイルを変更
-    //デバッグ用
-    console.log(message.value.name === user_email);
+    //ログインしているユーザーかどうかで投稿のスタイルを変更
     if(message.value.name === user_email){
         var post_name_class = 'my-post-name';
         var post_date_class = 'my-post-date';
@@ -242,32 +205,31 @@ const renderMessage = (message) => {
         <span class="${post_name_class}">${escapeHtml(message.value.name)}</span>
         </p>`;
 
-        //自分の投稿以外は削除できないように
+        //自分の投稿以外は削除できないようにそもそも表示しない
         var remove_html = `<p></p>`;
     }
 
+    //日付の整形
     let date_html = '';
     if(message.value.date) {
         date_html = `<p class="${post_date_class}">${escapeHtml(new Date(message.value.date).toLocaleString())}</p>`;
     }
 
+    //データベース上の投稿を挿入
     $("#"+last_message).before(
         `<div id="${message.id}" class="post">
             ${message_html}
             ${remove_html}
             ${date_html}
         </div>`);
+
+    //次の要素の挿入のためにidを保存
     last_message = message.id;
 }
 
-//クリック時の処理
-$('#post').click(() => postAction());
 
-//削除ボタンクリック時の処理 by koyo
-//第3引数に関数に渡すためのオブジェクトを定義する必要があるので注意
-//第4引数の関数は参照を渡す
-//※touchstartを入れないとiOSでタッチに反応しないので注意
-$('body').on("click touchstart", ".remove-text", removeAction);
+//---投稿処理---
+$('#post').click(() => postAction());
 
 //エンターキータイプ時の処理
 $('#content').keydown((e) => {
@@ -276,5 +238,52 @@ $('#content').keydown((e) => {
         return false;
     }
 });
+
+//メッセージ表示部分のダミーの初期値
+let last_message = "dummy";
+//投稿処理
+const postAction = () => {
+    //フォームに入力した内容(htmlエスケープ)
+    const content = escapeHtml($("#content").val());
+    //フォームが空で無ければ、Firebaseのデータベースに送信 
+    if(content && content !== "") {
+        ref.push({
+            title: 'タイトル',
+            content: content,
+            date: new Date().getTime(),
+            name: user_email
+        })
+        .then((res)=>{
+            console.log(res);
+        });
+    }
+    $("#content").val("");
+};
+
+//---投稿削除ボタンの処理---
+//アロー関数式使うと「thisがクリックされた要素のオブジェクトを指さなくなる」のでfunction()を使う
+const removeAction = function(){
+    let confirm_flag = confirm("本当に削除してもよろしいですか?");
+    if(confirm_flag){
+        //削除するデータベースの要素はthis.idを参照する
+        const removeRef = database.ref("messages/" + this.id);
+        removeRef.remove()
+        .then(function() {
+            console.log("Remove succeeded.")
+        })
+        .catch(function(error) {
+            console.log("Remove failed: " + error.message)
+        });
+
+        //要素の削除
+        $(this).closest('div').fadeOut('slow', function() { $(this).remove(); });
+    }
+};
+
+//削除ボタンクリック時の処理
+//第3引数に関数に渡すためのオブジェクトを定義する必要があるので注意
+//第4引数の関数は参照を渡す
+//※touchstartを入れないとiOSでタッチに反応しないので注意
+$('body').on("click touchstart", ".remove-text", removeAction);
 
 });

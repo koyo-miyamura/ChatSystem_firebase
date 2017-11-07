@@ -1,4 +1,4 @@
-/* https://github.com/milk-cocoa/chat 参考に少し変更 */
+/* https://github.com/milk-cocoa/chat 参考に作成 */
 html {
     -webkit-text-size-adjust: 100%;
     -ms-text-size-adjust: 100%;
@@ -40,7 +40,7 @@ textarea {
     vertical-align: top;
 }
 
-/* micro clearfix*/
+/* micro clearfix */
 /* For modern browsers */
 .cf:after,
 .cf:before {
@@ -175,8 +175,8 @@ textarea {
     margin-bottom: -5px;
 }
 .logout{
-    /* floatで寄せるとレイアウト崩れるのでmargin-topで暫定対応*/
-    /* もっとマシなやり方ありそう*/
+    /* floatで寄せるとレイアウト崩れるのでmargin-topで暫定対応 */
+    /* もっとマシなやり方ありそうだが暫定対応 */
     float: right;
     margin-top: 7px;
     font-size: 24px;
@@ -198,6 +198,7 @@ textarea {
     margin-left: 10px;
 }
 
+/* スマホで表示崩れるのでちょっと変更 */
 @media screen and (max-width: 480px) {
 /* 480pxまでの幅の場合に適応 */
     .container .postarea .postarea-button{
