@@ -12,7 +12,7 @@ var config = {
 firebase.initializeApp(config);
 const database = firebase.database();
 const ref = database.ref('messages');
-//ログアウト時にリダイレクトする際にonAuthChangedの処理でalertが出ないようにする
+//ログアウト時にリダイレクトする際にonAuthChangedの処理でalertが出ないようにする変数
 var logouting_flag = false;
 var user_email = null;
 var uid = null;
@@ -72,7 +72,7 @@ const user_add = () => {
                 location.href = "index.html";
             })
             .catch(function(error) {
-                // Handle Errors here.
+                //Handle Errors here.
                 var errorCode = error.code;
                 var errorMessage = error.message;
                   
@@ -105,7 +105,7 @@ const login = () => {
             location.href = "chat.html";
         })
         .catch(function(error) {
-            // Handle Errors here.
+            //Handle Errors here.
             var errorCode = error.code;
             var errorMessage = error.message;
             console.log("Error:" + errorCode + " " + errorMessage);
@@ -121,8 +121,8 @@ firebase.auth().onAuthStateChanged((user) => {
         uid = user.uid;
         console.log(user.email);
     } else {
-        // ログインしていない状態
-        // ログイン画面に遷移
+        //ログインしていない状態
+        //ログイン画面に遷移
         console.log("ログインしてないよ");
         console.log(location.pathname);
 
@@ -176,10 +176,9 @@ ref.on("child_added", (snapshot) => {
 
 //投稿処理
 const postAction = () => {
-    // フォームに入力した内容(htmlエスケープ)
+    //フォームに入力した内容(htmlエスケープ)
     const content = escapeHtml($("#content").val());
-    // フォームが空で無ければ、Firebaseのデータベースに送信
-    // 
+    //フォームが空で無ければ、Firebaseのデータベースに送信 
     if(content && content !== "") {
         ref.push({
             title: 'タイトル',
@@ -218,6 +217,7 @@ const removeAction = function(){
 const renderMessage = (message) => {
 
     //ログインしているユーザーかどうかでスタイルを変更
+    //デバッグ用
     console.log(message.value.name === user_email);
     if(message.value.name === user_email){
         var post_name_class = 'my-post-name';
@@ -242,7 +242,7 @@ const renderMessage = (message) => {
         <span class="${post_name_class}">${escapeHtml(message.value.name)}</span>
         </p>`;
 
-        // 自分の投稿以外は削除できないように
+        //自分の投稿以外は削除できないように
         var remove_html = `<p></p>`;
     }
 
@@ -263,9 +263,10 @@ const renderMessage = (message) => {
 //クリック時の処理
 $('#post').click(() => postAction());
 
-// 削除ボタンクリック時の処理 by koyo
-// 関数は参照を渡す
-//　第3引数に関数に渡すためのオブジェクトを定義する必要があるので注意
+//削除ボタンクリック時の処理 by koyo
+//第3引数に関数に渡すためのオブジェクトを定義する必要があるので注意
+//第4引数の関数は参照を渡す
+//※touchstartを入れないとiOSでタッチに反応しないので注意
 $('body').on("click touchstart", ".remove-text", removeAction);
 
 //エンターキータイプ時の処理

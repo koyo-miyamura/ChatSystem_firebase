@@ -156,7 +156,6 @@ textarea {
 /* Koyo 追加部分 */
 .remove-text{
     font-size: 0.7em;
-
     color: #848484;
     text-align: right;
     border: 0;
@@ -189,6 +188,7 @@ textarea {
 }
 .my-post-name{
     font-size: 0.7em;
+    color: #2980b9;
     font-weight: bold;
     margin-right: 10px;
 }
